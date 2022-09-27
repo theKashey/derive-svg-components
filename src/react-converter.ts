@@ -1,4 +1,4 @@
-import { basename, dirname, join, sep } from 'node:path';
+import { basename, dirname, join, sep, relative } from 'node:path';
 
 import * as glob from 'glob';
 import { camelCase, upperFirst } from 'lodash';
@@ -32,11 +32,9 @@ export const transformInFolderToReact = async (sourceDir: string): Promise<void>
 
   const prettierConfig = await prettier.resolveConfig(sourceDir);
 
-  if (!prettierConfig) {
-    throw new Error('cannot resolve prettierConfig');
+  if (prettierConfig) {
+    prettierConfig.parser = 'typescript';
   }
-
-  prettierConfig.parser = 'typescript';
 
   let transformed = 0;
 
@@ -56,15 +54,18 @@ export const transformInFolderToReact = async (sourceDir: string): Promise<void>
 
         const componentName = toComponentName(iconName);
 
-        return prettier.format(
-          `
-    /* eslint-disable */
-  export function ${componentName}(props: {className?:string; width?:number; height?:number}) {
-    return ${extractSvgHeader(content)} \n {...props} dangerouslySetInnerHTML={{ __html: \`${inner}\` }}\n/>;
-  }
-  `,
-          prettierConfig
-        );
+        const source = `/*
+* this file was automatically generated
+* source: ${relative(sourceDir, fileName)}    
+* date: ${new Date().toISOString()}
+*/
+/* eslint-disable */        
+export function ${componentName}(props: {className?:string; width?:number; height?:number}) {
+  return ${extractSvgHeader(content)} \n {...props} dangerouslySetInnerHTML={{ __html: \`${inner}\` }}\n/>;
+}
+`;
+
+        return prettierConfig ? prettier.format(source, prettierConfig) : source;
       });
     })
   );

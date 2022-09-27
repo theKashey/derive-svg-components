@@ -1,3 +1,8 @@
+/*
+ * this file was automatically generated
+ * source: test/assets/example-icon.svg
+ * date: 2022-09-27T12:05:37.899Z
+ */
 /* eslint-disable */
 export function ExampleIcon(props: { className?: string; width?: number; height?: number }) {
   return (
