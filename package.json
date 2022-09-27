@@ -1,6 +1,6 @@
 {
   "name": "derive-svg-components",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/es5/index.js",
   "repository": "git@github.com:theKashey/derive-svg-components.git",
   "author": "Anton Korzunov <thekashey@gmail.com>",
